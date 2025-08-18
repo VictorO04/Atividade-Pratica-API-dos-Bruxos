@@ -41,6 +41,45 @@ app.get('/', (req, res) => {
 app.get("/bruxos", (req, res) => {
     res.json(bruxos);
 });
+app.get("/bruxos/:id", (req, res) => {
+  let id = req.params.id;
+  id = parseInt(id);
+  const bruxo = bruxos.find(b => b.id === id);
+  
+  if (bruxo) {
+      res.status(200).json(bruxo);
+  } else {
+      res.status(404).json({
+          mensagem: "Bruxo não encontrado!"
+      });
+  }
+});
+
+app.get("/bruxos/nome/:nome", (req, res) => {
+  let nome = req.params.nome.toLowerCase();
+  const bruxosEcontrados = bruxos.filter(b => b.nome.toLowerCase().includes(nome));
+
+  if (bruxosEcontrados.length > 0) {
+    res.status(200).json(bruxosEcontrados);
+  } else {
+    res.status(404).json({
+      mensagem: "Bruxo não encontrado!"
+    });
+  }
+});
+
+app.get("/bruxos/casa/:casa", (req, res) => {
+  let casa = req.params.casa.toLowerCase();
+  const casasEncontradas = bruxos.filter(b => b.casa.toLowerCase().includes(casa));
+
+  if (casasEncontradas.length > 0) {
+    res.status(200).json(casasEncontradas);
+  } else {
+    res.status(404).json({
+      mensagem : "Casa não encontrada!"
+    });
+  }
+});
 
 app.listen(3000, () => {
     console.log(`🧙‍♂️ API dos Bruxos está no ar em http://localhost:${serverPort}`);
