@@ -1,4 +1,4 @@
-import express from "express";
+import express, { json } from "express";
 import bruxos from "./src/data/bruxos.js";
 
 const serverPort = 3000;
@@ -41,7 +41,8 @@ app.get('/', (req, res) => {
 app.get("/bruxos", (req, res) => {
     res.json(bruxos);
 });
-app.get("/bruxos/:id", (req, res) => {
+
+app.get("/bruxos/id/:id", (req, res) => {
   let id = req.params.id;
   id = parseInt(id);
   const bruxo = bruxos.find(b => b.id === id);
@@ -50,7 +51,7 @@ app.get("/bruxos/:id", (req, res) => {
       res.status(200).json(bruxo);
   } else {
       res.status(404).json({
-          mensagem: "Bruxo não encontrado!"
+          erro: `Bruxo com o ID ${id} não encontrado!`
       });
   }
 });
@@ -63,7 +64,7 @@ app.get("/bruxos/nome/:nome", (req, res) => {
     res.status(200).json(bruxosEcontrados);
   } else {
     res.status(404).json({
-      mensagem: "Bruxo não encontrado!"
+      mensagem: `Bruxo com o nome ${nome} não encontrado!`
     });
   }
 });
@@ -76,11 +77,23 @@ app.get("/bruxos/casa/:casa", (req, res) => {
     res.status(200).json(casasEncontradas);
   } else {
     res.status(404).json({
-      mensagem : "Casa não encontrada!"
+      mensagem : `Casa ${casa} não encontrada!`
     });
   }
 });
 
-app.listen(3000, () => {
+app.get("/bruxos/status/mortos"), (req, res) => {
+  const resultado = bruxos.filter((b) => !b.status);
+  
+  if (resultado) {
+    res.status(200).json(resultado);
+  } else {
+    res.status(404).json({
+      erro: "Nenhum bruxo morto encontrado!"
+    })
+  }
+}
+
+app.listen(serverPort, () => {
     console.log(`🧙‍♂️ API dos Bruxos está no ar em http://localhost:${serverPort}`);
 });
